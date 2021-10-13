@@ -1,6 +1,5 @@
 # Anteros PKCS #1 PEM KeyStore for Java 
 
-Working with PKCS #1 PEM based certificates in Java is an itch. Here is the scratch.
 
 ## Adicionando a dependência
 
