@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>br.com.anteros</groupId>
     <artifactId>Anteros-PEM-Keystore</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 
     <name>Anteros PEM Key Store Provider</name>
     <description>Provides a PEM based KeyStore</description>
