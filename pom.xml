@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>br.com.anteros</groupId>
     <artifactId>Anteros-PEM-Keystore</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
 
     <name>Anteros PEM Key Store Provider</name>
     <description>Provides a PEM based KeyStore</description>
@@ -55,6 +55,8 @@
         <bouncycastle.version>1.68</bouncycastle.version>
         <junit.jupiter.version>5.2.0</junit.jupiter.version>
         <junit.platform.version>1.2.0</junit.platform.version>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
 
 
@@ -137,7 +139,7 @@
                     <plugin>
                         <groupId>org.sonatype.plugins</groupId>
                         <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <version>1.6.3</version>
+                        <version>1.6.13</version>
                         <extensions>true</extensions>
                         <configuration>
                             <serverId>nexus-releases</serverId>
@@ -148,7 +150,6 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.6</version>
                         <executions>
                             <execution>
                                 <id>sign-artifacts</id>
@@ -159,71 +160,66 @@
                             </execution>
                         </executions>
                     </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-plugin-plugin</artifactId>
-                        <version>3.6.1</version>
-                        <configuration>
-                            <goalPrefix>Anteros-RestDoc-Maven-Plugin</goalPrefix>
-                            <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>mojo-descriptor</id>
-                                <goals>
-                                    <goal>descriptor</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>help-goal</id>
-                                <goals>
-                                    <goal>helpmojo</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-compiler-plugin</artifactId>
-                        <version>3.1</version>
-                        <configuration>
-                            <target>${java.versao}</target>
-                            <source>${java.versao}</source>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-source-plugin</artifactId>
-                        <version>3.2.1</version>
-                        <executions>
-                            <execution>
-                                <id>attach-sources</id>
-                                <goals>
-                                    <goal>jar</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>3.2.0</version>
-                        <executions>
-                            <execution>
-                                <id>attach-javadocs</id>
-                                <goals>
-                                    <goal>jar</goal>
-                                </goals>
-
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <doclint>none</doclint>
-                            <stylesheetfile>${basedir}/src/main/javadoc/stylesheet.css</stylesheetfile>
-                        </configuration>
-                    </plugin>
                 </plugins>
-
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-compiler-plugin</artifactId>
+                            <version>3.8.1</version>
+                            <configuration>
+                                <target>${java.version}</target>
+                                <source>${java.version}</source>
+                            </configuration>
+                        </plugin>
+                        <plugin>
+                            <groupId>org.bsc.maven</groupId>
+                            <artifactId>maven-processor-plugin</artifactId>
+                            <version>2.2.4</version>
+                            <executions>
+                                <execution>
+                                    <id>process</id>
+                                    <goals>
+                                        <goal>process</goal>
+                                    </goals>
+                                    <phase>generate-sources</phase>
+                                    <configuration>
+                                        <outputDirectory>${project.build.directory}/generated-sources/annotations</outputDirectory>
+                                        <processors>
+                                            <processor>br.com.anteros.persistence.apt.AnterosPersistenceAnnotationProcessor</processor>
+                                        </processors>
+                                    </configuration>
+                                </execution>
+                            </executions>
+                        </plugin>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-source-plugin</artifactId>
+                            <version>3.2.1</version>
+                            <executions>
+                                <execution>
+                                    <id>attach-sources</id>
+                                    <goals>
+                                        <goal>jar</goal>
+                                    </goals>
+                                </execution>
+                            </executions>
+                        </plugin>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-javadoc-plugin</artifactId>
+                            <version>3.2.0</version>
+                            <executions>
+                                <execution>
+                                    <id>attach-javadocs</id>
+                                    <goals>
+                                        <goal>jar</goal>
+                                    </goals>
+                                </execution>
+                            </executions>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
             </build>
 
             <distributionManagement>
@@ -233,76 +229,76 @@
                     <url>http://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
                 </repository>
             </distributionManagement>
-
         </profile>
+
 
         <profile>
             <id>local</id>
             <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-plugin-plugin</artifactId>
-                        <version>3.6.1</version>
-                        <configuration>
-                            <goalPrefix>Anteros-RestDoc-Maven-Plugin</goalPrefix>
-                            <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>mojo-descriptor</id>
-                                <goals>
-                                    <goal>descriptor</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>help-goal</id>
-                                <goals>
-                                    <goal>helpmojo</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-compiler-plugin</artifactId>
-                        <version>3.1</version>
-                        <configuration>
-                            <target>${java.version}</target>
-                            <source>${java.version}</source>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-source-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>attach-sources</id>
-                                <goals>
-                                    <goal>jar</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>attach-javadocs</id>
-                                <goals>
-                                    <goal>jar</goal>
-                                </goals>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-compiler-plugin</artifactId>
+                            <version>3.1</version>
+                            <configuration>
+                                <target>${java.versao}</target>
+                                <source>${java.versao}</source>
+                            </configuration>
+                        </plugin>
+                        <plugin>
+                            <groupId>org.bsc.maven</groupId>
+                            <artifactId>maven-processor-plugin</artifactId>
+                            <version>2.2.4</version>
+                            <executions>
+                                <execution>
+                                    <id>process</id>
+                                    <goals>
+                                        <goal>process</goal>
+                                    </goals>
+                                    <phase>generate-sources</phase>
+                                    <configuration>
+                                        <outputDirectory>${project.build.directory}/generated-sources/annotations</outputDirectory>
+                                        <processors>
+                                            <processor>br.com.anteros.persistence.apt.AnterosPersistenceAnnotationProcessor</processor>
+                                        </processors>
+                                    </configuration>
+                                </execution>
+                            </executions>
+                        </plugin>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-source-plugin</artifactId>
+                            <version>3.2.1</version>
+                            <executions>
+                                <execution>
+                                    <id>attach-sources</id>
+                                    <goals>
+                                        <goal>jar</goal>
+                                    </goals>
+                                </execution>
+                            </executions>
+                        </plugin>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-javadoc-plugin</artifactId>
+                            <version>3.2.0</version>
+                            <executions>
+                                <execution>
+                                    <id>attach-javadocs</id>
+                                    <goals>
+                                        <goal>jar</goal>
+                                    </goals>
 
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <doclint>none</doclint>
-                            <stylesheetfile>${basedir}/src/main/javadoc/stylesheet.css</stylesheetfile>
-                        </configuration>
-                    </plugin>
-                </plugins>
+                                </execution>
+                            </executions>
+                            <configuration>
+                                <doclint>none</doclint>
+                            </configuration>
+                        </plugin>
 
+                    </plugins>
+                </pluginManagement>
             </build>
         </profile>
     </profiles>
